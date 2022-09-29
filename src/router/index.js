@@ -84,6 +84,30 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/training',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/training'),
+        name: 'Traning',
+        meta: { title: 'training', icon: 'education', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/prediction',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/prediction'),
+        name: 'Prediction',
+        meta: { title: 'prediction', icon: 'search', affix: true }
+      }
+    ]
+  },
+  {
     path: '/documentation',
     component: Layout,
     children: [
@@ -94,7 +118,7 @@ export const constantRoutes = [
         meta: { title: 'Documentation', icon: 'documentation', affix: true }
       }
     ],
-    hidden:true
+    hidden: true
   },
   {
     path: '/guide',
@@ -108,7 +132,7 @@ export const constantRoutes = [
         meta: { title: 'Guide', icon: 'guide', noCache: true }
       }
     ],
-    hidden:true
+    hidden: true
   },
   {
     path: '/profile',
@@ -171,7 +195,7 @@ export const asyncRoutes = [
         }
       }
     ],
-    hidden:true
+    hidden: true
   },
 
   {
@@ -185,7 +209,7 @@ export const asyncRoutes = [
         meta: { title: 'Icons', icon: 'icon', noCache: true }
       }
     ],
-    hidden:true
+    hidden: true
   },
 
   /** when your routing map is too long, you can split it into small modules **/
@@ -224,7 +248,7 @@ export const asyncRoutes = [
         meta: { title: 'Article List', icon: 'list' }
       }
     ],
-    hidden:true
+    hidden: true
   },
 
   {
@@ -238,7 +262,7 @@ export const asyncRoutes = [
         meta: { title: 'Tab', icon: 'tab' }
       }
     ],
-    hidden:true
+    hidden: true
   },
 
   {
@@ -264,7 +288,7 @@ export const asyncRoutes = [
         meta: { title: '404', noCache: true }
       }
     ],
-    hidden:true
+    hidden: true
   },
 
   {
@@ -278,7 +302,7 @@ export const asyncRoutes = [
         meta: { title: 'Error Log', icon: 'bug' }
       }
     ],
-    hidden:true
+    hidden: true
   },
 
   {
@@ -316,7 +340,7 @@ export const asyncRoutes = [
         meta: { title: 'Upload Excel' }
       }
     ],
-    hidden:true
+    hidden: true
   },
 
   {
@@ -334,7 +358,7 @@ export const asyncRoutes = [
         meta: { title: 'Export Zip' }
       }
     ],
-    hidden:true
+    hidden: true
   },
 
   {
@@ -349,7 +373,7 @@ export const asyncRoutes = [
         meta: { title: 'PDF', icon: 'pdf' }
       }
     ],
-    hidden:true
+    hidden: true
   },
   {
     path: '/pdf/download',
@@ -368,7 +392,7 @@ export const asyncRoutes = [
         meta: { title: 'Theme', icon: 'theme' }
       }
     ],
-    hidden:true
+    hidden: true
   },
 
   {
@@ -382,7 +406,7 @@ export const asyncRoutes = [
         meta: { title: 'Clipboard', icon: 'clipboard' }
       }
     ],
-    hidden:true
+    hidden: true
   },
 
   {
@@ -394,7 +418,7 @@ export const asyncRoutes = [
         meta: { title: 'External Link', icon: 'link' }
       }
     ],
-    hidden:true
+    hidden: true
   },
 
   // 404 page must be placed at the end !!!
