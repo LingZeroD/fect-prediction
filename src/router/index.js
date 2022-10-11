@@ -53,6 +53,7 @@ export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index'),
+    // component: () => import('@/views/profile/index'),
     hidden: true
   },
   {
@@ -91,7 +92,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/training'),
         name: 'Traning',
-        meta: { title: 'training', icon: 'education', affix: true }
+        meta: { title: 'training', icon: 'el-icon-s-opportunity', affix: true }
       }
     ]
   },
@@ -103,7 +104,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/prediction'),
         name: 'Prediction',
-        meta: { title: 'prediction', icon: 'search', affix: true }
+        meta: { title: 'prediction', icon: 'el-icon-aim', affix: true }
       }
     ]
   },

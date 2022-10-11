@@ -32,9 +32,12 @@ const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
+    console.log(userInfo)// 能打出来
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
+      console.log(userInfo)// 能打出来
+      login({ username: username.trim(), password: password }).then(res => {
+        const { data } = res
+        console.log(res)// 运行不到这里
         commit('SET_TOKEN', data.token)
         setToken(data.token)
         resolve()
@@ -61,7 +64,7 @@ const actions = {
           reject('getInfo: roles must be a non-null array!')
         }
 
-        commit('SET_ROLES', roles)
+        commit('SET_ROLES', '[\'admin\']')
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         commit('SET_INTRODUCTION', introduction)
