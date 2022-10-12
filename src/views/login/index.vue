@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">欢迎来到xxx预测系统</h3>
       </div>
 
       <el-form-item prop="username">
@@ -45,26 +45,19 @@
         </el-form-item>
       </el-tooltip>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
       <div style="position:relative">
-        <div class="tips">
-          <span>Username : admin</span>
-          <span>Password : any</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">Username : editor</span>
-          <span>Password : any</span>
-        </div>
 
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
-          Or connect with
-        </el-button>
+        <!--        <el-button class="thirdparty-button" type="primary" style="width:100%;margin-bottom:30px;" @click="showDialog=true">-->
+        <!--          Register-->
+        <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:10px;" @click.native.prevent="handleRegister()">还没有账号？点我注册</el-button>
+        <!--        <div style="position:relative">-->
+        <!--        </el-button>-->
       </div>
     </el-form>
 
-    <el-dialog title="Or connect with" :visible.sync="showDialog">
-      Can not be simulated on local, so please combine you own business simulation! ! !
+    <el-dialog title="Register" :visible.sync="showDialog">
       <br>
       <br>
       <br>
@@ -170,32 +163,31 @@ export default {
         }
       })
     },
-    getOtherQuery(query) {
-      return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== 'redirect') {
-          acc[cur] = query[cur]
-        }
-        return acc
-      }, {})
+    handleRegister() {
+      this.$router.push({ name: 'auth-redirect' })
+      //   this.$refs['ruleForm'].validate((valid) => {
+      //     if (valid) {
+      //       const user = {
+      //         email: this.ruleForm.email,
+      //         code: this.ruleForm.code,
+      //         password: encrypt(this.ruleForm.pwd)
+      //       }
+      //       register(this.ruleForm.code, user).then(res => {
+      //         this.$message({
+      //           showClose: true,
+      //           message: '注册成功，正在跳转到登录界面...',
+      //           type: 'success'
+      //         })
+      //         setTimeout(() => {
+      //           this.$router.push('/')
+      //         }, 2000)
+      //       }).catch(err => {
+      //         console.log(err.response.data.message)
+      //       })
+      //     }
+      //   })
+      // }
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
   }
 }
 </script>
@@ -310,7 +302,7 @@ $light_gray:#eee;
   }
 
   .thirdparty-button {
-    position: absolute;
+    position: relative;
     right: 0;
     bottom: 6px;
   }
