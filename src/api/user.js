@@ -26,7 +26,7 @@ export function alterPassword(data) {
 
 export function logout() {
   return request({
-    url: '/vue-element-admin/user/logout',
+    url: 'logout',
     method: 'post'
   })
 }

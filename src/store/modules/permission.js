@@ -19,6 +19,7 @@ function hasPermission(roles, route) {
  * @param roles
  */
 export function filterAsyncRoutes(routes, roles) {
+  console.log('路由x')
   const res = []
 
   routes.forEach(route => {
@@ -41,6 +42,7 @@ const state = {
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
+    console.log('路由')
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
   }
