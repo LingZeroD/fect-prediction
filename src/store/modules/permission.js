@@ -19,6 +19,7 @@ function hasPermission(roles, route) {
  * @param roles
  */
 export function filterAsyncRoutes(routes, roles) {
+  console.log('路由x')
   const res = []
 
   routes.forEach(route => {
@@ -41,6 +42,7 @@ const state = {
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
+    console.log('路由')
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
   }
@@ -50,7 +52,9 @@ const actions = {
   generateRoutes({ commit }, roles) {
     return new Promise(resolve => {
       let accessedRoutes
+      console.log('why')
       if (roles.includes('admin')) {
+        console.log('我是admin')
         accessedRoutes = asyncRoutes || []
       } else {
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)

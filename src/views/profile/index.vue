@@ -10,12 +10,6 @@
         <el-col :span="18" :xs="24">
           <el-card>
             <el-tabs v-model="activeTab">
-              <!-- <el-tab-pane label="Activity" name="activity">
-                <activity />
-              </el-tab-pane>
-              <el-tab-pane label="Timeline" name="timeline">
-                <timeline />
-              </el-tab-pane> -->
               <el-tab-pane label="修改密码" name="account">
                 <account :user="user" />
               </el-tab-pane>
@@ -31,8 +25,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import UserCard from './components/UserCard'
-// import Activity from './components/Activity'
-// import Timeline from './components/Timeline'
 import Account from './components/Account'
 
 export default {
@@ -47,8 +39,7 @@ export default {
   computed: {
     ...mapGetters([
       'name',
-      'avatar',
-      'roles'
+      'avatar'
     ])
   },
   created() {
@@ -58,9 +49,10 @@ export default {
     getUser() {
       this.user = {
         name: this.name,
-        role: this.roles.join(' | '),
-        email: 'admin@test.com',
-        avatar: this.avatar
+        password: this.password,
+        avatar: this.avatar,
+        email: '2030xxxx@bjtu.edu.cn'
+        // this.email
       }
     }
   }

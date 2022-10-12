@@ -23,10 +23,7 @@ export default {
       default: () => {
         return {
           name: '',
-          avatar: '',
-          workID: '',
-          department: '',
-          position: ''
+          email: ''
         }
       }
     }
@@ -64,7 +61,8 @@ export default {
   methods: {
     submit(updateForm, name) {
       console.log(name)
-      alterPassword({ name: this.$store.getters.name, password: updateForm.npwd }).then(res => {
+      // name: this.$store.getters.name, password: updateForm.npwd
+      alterPassword({ username: 'aki', password: updateForm.npwd, email: '20301121@qq.com' }).then(res => {
         this.$message({
           message: '更改成功',
           type: 'success'
