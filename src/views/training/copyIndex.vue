@@ -93,7 +93,7 @@
 
 <script>
 const parameterOptions = ['1', '2', '3', '4']
-import { fetchList } from '@/api/article'
+import { fetchList } from '@/api/model'
 export default {
   name: 'SelectExcel',
   data() {

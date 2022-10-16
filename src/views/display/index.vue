@@ -1,189 +1,95 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.creator" placeholder="creator" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <!--      <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">-->
-      <!--        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />-->
-      <!--      </el-select>-->
-      <el-select v-model="listQuery.algorithm" placeholder="algorithm" clearable class="filter-item" style="width: 230px">
-        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
-      </el-select>
-      <!--      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">-->
-      <!--        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />-->
-      <!--      </el-select>-->
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        Search
-      </el-button>
-      <!--      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">-->
-      <!--        Add-->
-      <!--      </el-button>-->
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        Export
-      </el-button>
-      <!--      <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">-->
-      <!--        reviewer-->
-      <!--      </el-checkbox>-->
+    <div style="margin: 10px 0">
+      <el-input v-model="search_creator" placeholder="creator" style="width: 20%" clearable />
+      <el-input v-model="search_algorithm" placeholder="algorithm" style="width: 20%;margin-left:15px" clearable />
+      <el-button type="primary" style="margin-left: 15px" @click="handleFilter()">search</el-button>
+
+      <!--        <el-button type="primary" style="margin-left: 5px" @click=handleDownload()>export</el-button>-->
     </div>
 
     <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="list"
+      :data="tableData"
       border
       fit
       highlight-current-row
       style="width: 100%;"
-      @sort-change="sortChange"
     >
-      <el-table-column label="id" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+      <el-table-column prop="id" label="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')" />
+      <el-table-column prop="des" label="description" min-width="150px" align="center" />
+      <el-table-column prop="algorithm" label="algorithm" width="90px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
+          <el-tag>{{ row.algorithm | typeFilter }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="create_time" width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+      <el-table-column prop="create_time" label="create_time" width="160px" align="center" />
+      <el-table-column prop="creator" label="creator" width="110px" align="center" />
+      <el-table-column prop="accuracy" label="accuracy" width="90px" align="center" />
+      <el-table-column prop="prec" label="precision" width="90px" align="center" />
+      <el-table-column prop="rec" label="recall" width="90px" align="center" />
+      <el-table-column
+        label="训练数据"
+        align="center"
+        :show-overflow-tooltip="true"
+      >
+        <template scope="scope">
+          <div name="downloadfile" style="color:cornflowerblue" @click="downloadExcel(scope.row)">data.csv</div>
         </template>
       </el-table-column>
-      <el-table-column label="algorithm description" min-width="150px" align="center">
+      <el-table-column label="Actions" align="center" width="90" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <span class="link-type" @click="handleUpdate(row)">{{ row.title }}</span>
-          <!--          <el-tag>{{ row.type | typeFilter }}</el-tag>-->
-        </template>
-      </el-table-column>
-      <el-table-column label="creator" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="accuracy" width="90px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.accuracy }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="precision" width="90px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.precision }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="f1" width="90px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.f1 }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="auc" width="90px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.auc }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column v-if="showReviewer" label="Reviewer" width="110px" align="center">
-        <template slot-scope="{row}">
-          <span style="color:red;">{{ row.reviewer }}</span>
-        </template>
-      </el-table-column>
-      <!--      <el-table-column label="Imp" width="80px">-->
-      <!--        <template slot-scope="{row}">-->
-      <!--          <svg-icon v-for="n in + row.importance" :key="n" icon-class="star" class="meta-item__icon" />-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
-      <!--      <el-table-column label="Readings" align="center" width="95">-->
-      <!--        <template slot-scope="{row}">-->
-      <!--          <span v-if="row.pageviews" class="link-type" @click="handleFetchPv(row.pageviews)">{{ row.pageviews }}</span>-->
-      <!--          <span v-else>0</span>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
-      <el-table-column label="Status" class-name="status-col" width="100">
-        <template slot-scope="{row}">
-          <el-tag :type="row.status | statusFilter">
-            {{ row.status }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            Edit
-          </el-button>
-          <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-            Publish
-          </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-            Draft
-          </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
-            Delete
+          <el-button type="primary" size="mini" @click="handleEdit(row)">
+            Look
           </el-button>
         </template>
       </el-table-column>
+
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="tableData.page" :limit.sync="tableData.limit" @pagination="load" />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="algorithm" prop="algorithm" label-width="100px">
-          <el-select v-model="temp.algorithm" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="create_time" prop="create_time" label-width="100px">
-          <el-date-picker v-model="temp.create_time" type="create_time" placeholder="Please pick a date" />
-        </el-form-item>
-        <el-form-item label="description" prop="description" label-width="100px">
-          <el-input v-model="temp.description" />
-        </el-form-item>
-        <el-form-item label="train_data" prop="train_data" label-width="100px">
-          <el-input v-model="temp.train_data" />
-        </el-form-item>
+    <el-dialog title="Details" :visible.sync="dialogVisible">
+      <el-form v-model="form" border fit highlight-current-row style="width: 600px; margin-left:0px;">
 
-        <!--        <el-form-item label="Status">-->
-        <!--          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">-->
-        <!--            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />-->
-        <!--          </el-select>-->
-        <!--        </el-form-item>-->
-        <!--        <el-form-item label="Imp">-->
-        <!--          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />-->
-        <!--        </el-form-item>-->
-        <!--        <el-form-item label="Remark">-->
-        <!--          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />-->
-        <!--        </el-form-item>-->
+        <el-link
+          :underline="false"
+          style="color:cornflowerblue"
+          @click="download"
+        >下载查看：训练数据</el-link>
+
+        <el-form-item label="param1" width="120px" align="center" />
+        <el-input v-model="form.param1" width="120px" align="center" disabled="false" />
+
+        <el-form-item label="param2" width="120px" align="center" />
+        <el-input v-model="form.param2" width="120px" align="center" disabled="false" />
+
+        <el-form-item label="param3" width="120px" align="center" />
+        <el-input v-model="form.param3" width="120px" align="center" disabled="false" />
+
+        <el-form-item label="param4" width="120px" align="center" />
+        <el-input v-model="form.param4" width="120px" align="center" disabled="false" />
+
       </el-form>
+
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          Cancel
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
+        <el-button @click="dialogVisible = false">
+          Close
         </el-button>
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog>
   </div>
+
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
-import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-
+import { modellist } from '@/api/model'
 const calendarTypeOptions = [
   { key: '0', display_name: '算法1' },
   { key: '1', display_name: '算法2' }
-  // { key: 'JP', display_name: 'Japan' },
-  // { key: 'EU', display_name: 'Eurozone' }
 ]
 
-// arr to obj, such as { CN : "China", US : "USA" }
+// eslint-disable-next-line no-unused-vars
 const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name
   return acc
@@ -191,213 +97,106 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
 
 export default {
   name: 'ComplexTable',
-  components: { Pagination },
-  directives: { waves },
+  components: {},
   filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
     typeFilter(type) {
       return calendarTypeKeyValue[type]
     }
   },
   data() {
     return {
-      tableKey: 0,
-      list: null,
+      URL,
+      form: {},
+      currentPage: 1,
       total: 0,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 20,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: '+id'
-      },
-      importanceOptions: [1, 2, 3],
+      creator: '',
+      algorithm: '',
       calendarTypeOptions,
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
-      statusOptions: ['published', 'draft', 'deleted'],
-      showReviewer: false,
-      temp: {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
-      },
-      dialogFormVisible: false,
+      downloadLoading: false,
+      dialogVisible: false,
       dialogStatus: '',
-      textMap: {
-        update: 'Edit',
-        create: 'Create'
-      },
-      dialogPvVisible: false,
-      pvData: [],
-      rules: {
-        algorithm: [{ required: true, message: 'algorithm is required', trigger: 'change' }],
-        create_time: [{ type: 'date', required: true, message: 'create_time is required', trigger: 'change' }],
-        description: [{ required: true, message: 'description is required', trigger: 'blur' }],
-        train_data: [{ required: true, message: 'train_data is required', trigger: 'blur' }]
-      },
-      downloadLoading: false
+      tableData: [],
+      search_creator: '',
+      search_algorithm: ''
     }
   },
   created() {
-    this.getList()
+    this.load()
   },
   methods: {
-    getList() {
-      this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+    load() {
+      modellist({}).then(res => {
+        console.log(res)
+        this.tableData = res.data.modellist
+        this.total = res.data.total
+      }).catch(error => {
+        console.log(error)
       })
     },
     handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-    },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
-      })
-      row.status = status
-    },
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
-      }
-    },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
-    },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
-      }
-    },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
+      modellist({
+        'creator': this.search_creator,
+        'algorithm': this.search_algorithm
+      }).then(res => {
+        console.log(res)
+        this.tableData = res.data.modellist
+        this.total = res.data.total
+      }).catch(error => {
+        console.log(error)
       })
     },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
+    // 转化路径变base64的路径
+    convertBase64ToBlob(base64, fileType, slice) {
+      return new Blob(
+        atob(base64)
+          .match(new RegExp(`([\\s\\S]{${slice}})|([\\s\\S]{1,${slice}})`, 'g'))
+          .map(function(item) {
+            return new Uint8Array(
+              item.split('').map(function(s, i) {
+                return item.charCodeAt(i)
+              })
+            )
+          }),
+        { type: fileType }
+      )
     },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+    getSortClass(key) {
+      // const sort = this.tableData.sort
+      // return sort === `+${key}` ? 'ascending' : 'descending'
     },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            const index = this.list.findIndex(v => v.id === this.temp.id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
+    download() {
+      const file = this.convertBase64ToBlob(this.form.data, 'application/vhd.ms-excel', 1024)
+      const link = document.createElement('a')
+      link.download = '数据.csv'
+      link.href = URL.createObjectURL(file)
+      link.click()
+      URL.revokeObjectURL(link.href)
     },
-    handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
-      })
-      this.list.splice(index, 1)
+    downloadExcel(row) {
+      const file = this.convertBase64ToBlob(row.data, 'application/vhd.ms-excel', 1024)
+      const link = document.createElement('a')
+      link.download = 'data.csv'
+      link.href = URL.createObjectURL(file)
+      link.click()
+      URL.revokeObjectURL(link.href)
     },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
-    },
-    formatJson(filterVal) {
-      return this.list.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
+    // handleDownload() {
+    //   this.downloadLoading = true
+    //   import('@/vendor/Export2Excel').then(excel => {
+    //     const tHeader = ['create_time', 'creator', 'algorithm', 'accuracy']
+    //     const filterVal = ['create_time', 'creator', 'algorithm', 'accuracy']
+    //     const data = this.formatJson(filterVal)
+    //     excel.export_json_to_excel({
+    //       header: tHeader,
+    //       data,
+    //       filename: 'table-list'
+    //     })
+    //     this.downloadLoading = false
+    //   })
+    // },
+    handleEdit(row) {
+      this.form = JSON.parse(JSON.stringify(row))
+      this.dialogVisible = true
     }
   }
 }

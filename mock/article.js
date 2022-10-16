@@ -1,3 +1,4 @@
+/*
 const Mock = require('mockjs')
 
 const List = []
@@ -28,8 +29,8 @@ for (let i = 0; i < count; i++) {
 }
 
 module.exports = [
-  {
-    url: '/vue-element-admin/article/list',
+  /!*{
+    url: '/modellist',
     type: 'get',
     response: config => {
       const { importance, type, title, page = 1, limit = 20, sort } = config.query
@@ -55,10 +56,10 @@ module.exports = [
         }
       }
     }
-  },
+  },*!/
 
   {
-    url: '/vue-element-admin/article/detail',
+    url: '/modellist',
     type: 'get',
     response: config => {
       const { id } = config.query
@@ -74,7 +75,7 @@ module.exports = [
   },
 
   {
-    url: '/vue-element-admin/article/pv',
+    url: '/modellist',
     type: 'get',
     response: _ => {
       return {
@@ -114,3 +115,4 @@ module.exports = [
   }
 ]
 
+*/
