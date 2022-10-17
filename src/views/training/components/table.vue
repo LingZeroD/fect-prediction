@@ -8,21 +8,21 @@
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column prop="id" label="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')" />
-      <el-table-column prop="des" label="description" min-width="150px" align="center" />
-      <el-table-column prop="algorithm" label="algorithm" width="90px" align="center">
+      <el-table-column prop="id" label="Id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')" />
+      <el-table-column prop="des" label="Description" min-width="150px" align="center" />
+      <el-table-column prop="algorithm" label="Algorithm" width="90px" align="center">
         <template slot-scope="{row}">
           <el-tag>{{ row.algorithm | typeFilter }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="create_time" label="create_time" width="160px" align="center" />
-      <el-table-column prop="creator" label="creator" width="110px" align="center" />
-      <el-table-column prop="param1" label="param1" width="90px" align="center" />
-      <el-table-column prop="param2" label="param2" width="90px" align="center" />
-      <el-table-column prop="param3" label="param3" width="90px" align="center" />
-      <el-table-column prop="param4" label="param4" width="90px" align="center" />
+      <el-table-column prop="create_time" label="Create_time" width="160px" align="center" />
+      <el-table-column prop="creator" label="Creator" width="110px" align="center" />
+      <el-table-column prop="param1" label="Param1" width="90px" align="center" />
+      <el-table-column prop="param2" label="Param2" width="90px" align="center" />
+      <el-table-column prop="param3" label="Param3" width="90px" align="center" />
+      <el-table-column prop="param4" label="Param4" width="90px" align="center" />
       <el-table-column
-        label="训练数据"
+        label="Dataset"
         align="center"
         :show-overflow-tooltip="true"
       >

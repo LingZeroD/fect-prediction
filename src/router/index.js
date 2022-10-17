@@ -74,39 +74,14 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    // redirect: '/dashboard',
+    redirect: '/display',
     hidden: true,
     children: [
       {
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard'
-        //  meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
-      }
-    ]
-  },
-  {
-    path: '/training',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/training'),
-        name: 'Traning',
-        meta: { title: 'training', icon: 'el-icon-s-opportunity', affix: true }
-      }
-    ]
-  },
-  {
-    path: '/prediction',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/prediction'),
-        name: 'Prediction',
-        meta: { title: 'prediction', icon: 'el-icon-aim', affix: true }
+        // //  meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
       }
     ]
   },
@@ -118,7 +93,31 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/display'),
         name: 'Display',
-        meta: { title: 'display', icon: 'list', affix: true }
+        meta: { title: 'Display', icon: 'list', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/training',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/training'),
+        name: 'Traning',
+        meta: { title: 'Training', icon: 'el-icon-s-opportunity', affix: true }
+      }
+    ]
+  },
+  {
+    path: '/prediction',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/prediction'),
+        name: 'Prediction',
+        meta: { title: 'Prediction', icon: 'el-icon-aim', affix: true }
       }
     ]
   },
@@ -159,7 +158,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/profile/index'),
         name: 'Profile',
-        meta: { title: 'Profile', icon: 'user', noCache: true }
+        meta: { title: 'Profile', icon: 'user', affix: true }
       }
     ]
   }
