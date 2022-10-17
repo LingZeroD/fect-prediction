@@ -1,108 +1,107 @@
-<!-- <template>
+<template>
   <div class="app-container">
-    <el-input v-model="filename" placeholder="Please enter the file name (default excel-list)" style="width:350px;" prefix-icon="el-icon-document" />
-    <el-button :loading="downloadLoading" style="margin-bottom:20px" type="primary" icon="el-icon-document" @click="handleDownload">
-      Export Selected Items
-    </el-button>
-    <a href="https://panjiachen.github.io/vue-element-admin-site/feature/component/excel.html" target="_blank" style="margin-left:15px;">
-      <el-tag type="info">Documentation</el-tag>
-    </a>
+
     <el-table
-      ref="multipleTable"
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="拼命加载中"
+      :data="tableData"
       border
       fit
       highlight-current-row
-      @selection-change="handleSelectionChange"
+      style="width: 100%;"
     >
-      <el-table-column type="selection" align="center" />
-      <el-table-column align="center" label="Id" width="95">
-        <template slot-scope="scope">
-          {{ scope.$index }}
+      <el-table-column prop="id" label="Id" sortable="custom" align="center" width="110" :class-name="getSortClass('id')" />
+      <el-table-column prop="model" label="ModelID" width="90px" align="center">
+        <template slot-scope="{row}">
+          <el-tag>{{ row.model }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="Title">
-        <template slot-scope="scope">
-          {{ scope.row.title }}
+      <el-table-column prop="time" label="Create_time" width="330px" align="center" />
+      <el-table-column prop="username" label="Creator" width="150px" align="center" />
+      <el-table-column
+        label="Dataset"
+        align="center"
+        :show-overflow-tooltip="true"
+      >
+        <template scope="scope">
+          <div name="downloadfile" style="color:cornflowerblue" @click="downloadExcel(scope.row)">data.csv</div>
         </template>
       </el-table-column>
-      <el-table-column label="Author" width="110" align="center">
-        <template slot-scope="scope">
-          <el-tag>{{ scope.row.author }}</el-tag>
+
+      <el-table-column label="Status" width="100" align="center">
+        <template slot-scope="{row}">
+          <el-tag :type="row.status | statusFilter">
+            status
+            <!-- {{ row.status }} -->
+          </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="Readings" width="115" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.pageviews }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="PDate" width="220">
-        <template slot-scope="scope">
-          <i class="el-icon-time" />
-          <span>{{ scope.row.display_time }}</span>
-        </template>
-      </el-table-column>
+
     </el-table>
+
+    <pagination v-show="total>0" :total="total" :page.sync="tableData.page" :limit.sync="tableData.limit" @pagination="load" />
   </div>
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
+import { preList } from '@/api/model'
 
 export default {
-  name: 'Table',
+  name: 'ComplexTable',
+  components: {},
   data() {
     return {
-      list: null,
-      listLoading: true,
-      multipleSelection: [],
-      downloadLoading: false,
-      filename: ''
+      URL,
+      form: {},
+      currentPage: 1,
+      total: 0,
+      creator: '',
+      tableData: []
     }
   },
   created() {
-    this.fetchData()
+    this.load()
   },
   methods: {
-    fetchData() {
-      this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.listLoading = false
+    load() {
+      preList({ 'username': this.$store.getters.name }).then(res => {
+        console.log(res)
+        this.tableData = res.data.modellist
+        console.log(this.tableData)
+        this.total = res.data.total
+      }).catch(error => {
+        console.log(error)
       })
     },
-    handleSelectionChange(val) {
-      this.multipleSelection = val
+    // 转化路径变base64的路径
+    convertBase64ToBlob(base64, fileType, slice) {
+      return new Blob(
+        atob(base64)
+          .match(new RegExp(`([\\s\\S]{${slice}})|([\\s\\S]{1,${slice}})`, 'g'))
+          .map(function(item) {
+            return new Uint8Array(
+              item.split('').map(function(s, i) {
+                return item.charCodeAt(i)
+              })
+            )
+          }),
+        { type: fileType }
+      )
     },
-    handleDownload() {
-      if (this.multipleSelection.length) {
-        this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['Id', 'Title', 'Author', 'Readings', 'Date']
-          const filterVal = ['id', 'title', 'author', 'pageviews', 'display_time']
-          const list = this.multipleSelection
-          const data = this.formatJson(filterVal, list)
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: this.filename
-          })
-          this.$refs.multipleTable.clearSelection()
-          this.downloadLoading = false
-        })
-      } else {
-        this.$message({
-          message: 'Please select at least one item',
-          type: 'warning'
-        })
-      }
+    downloadExcel(row) {
+      const file = this.convertBase64ToBlob(row.data, 'application/vhd.ms-excel', 1024)
+      const link = document.createElement('a')
+      link.download = 'data.csv'
+      link.href = URL.createObjectURL(file)
+      link.click()
+      URL.revokeObjectURL(link.href)
     },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => v[j]))
+    getSortClass(key) {
+      // const sort = this.tableData.sort
+      // return sort === `+${key}` ? 'ascending' : 'descending'
+    },
+    handleEdit(row) {
+      this.form = JSON.parse(JSON.stringify(row))
+      this.dialogVisible = true
     }
   }
 }
 </script>
- -->

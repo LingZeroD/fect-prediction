@@ -28,10 +28,21 @@ export function getModelID() {
     method: 'get'
   })
 }
-export function getRecord() {
+
+export function modellist(data) {
+  console.log(data)
+  return request({
+    url: '/modellist',
+    method: 'get',
+    params: data
+  })
+}
+
+export function preList(data) {
   return request({
     url: '/result',
-    method: 'get'
+    method: 'get',
+    params: data
   })
 }
 

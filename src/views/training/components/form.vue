@@ -15,6 +15,12 @@
     <el-form-item label="Parameter②">
       <el-input v-model="form.param2" style="width: 250px" />
     </el-form-item>
+    <!-- <el-form-item label="Parameter③">
+      <el-input v-model="form.param3" style="width: 250px" />
+    </el-form-item>
+    <el-form-item label="Parameter④">
+      <el-input v-model="form.param4" style="width: 250px" />
+    </el-form-item> -->
 
     <el-form-item label="Data">
       <el-upload
@@ -49,6 +55,8 @@ export default {
         algorithm: '',
         des: '',
         creator: this.$store.getters.name,
+        // param3: '',
+        // param4: '',
         param1: '',
         param2: ''
       }

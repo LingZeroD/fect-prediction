@@ -40,7 +40,7 @@ export default {
     return {
       form: {
         model: '',
-        creator: this.$store.getters.name
+        username: this.$store.getters.name
       },
       options: []
     }
@@ -67,7 +67,7 @@ export default {
         formData.append(key, this.form[key])
         console.log(formData.get(key))
       }
-      formData.append('data', this.data)
+      formData.append('pre_data', this.data)
       predictionModel(formData).then(res => {
         this.$message({
           message: '上传成功',
