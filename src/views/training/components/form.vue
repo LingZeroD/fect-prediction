@@ -5,16 +5,16 @@
     </el-form-item>
     <el-form-item label="Algorithm">
       <el-select v-model="form.algorithm" placeholder="Please select an algorithm" style="width: 250px">
-        <el-option label="Algorithm1" value="0" />
-        <el-option label="Algorithm2" value="1" />
+        <el-option label="RandomForest" value="0" />
+        <el-option label="AdaBoost" value="1" />
       </el-select>
     </el-form-item>
-    <el-form-item label="Parameter①">
-      <el-input v-model="form.param1" style="width: 250px" />
+    <el-form-item label="Classifier">
+      <el-input v-model="form.param1" placeholder="Please input your parameter" style="width: 250px" />
     </el-form-item>
-    <el-form-item label="Parameter②">
+    <!-- <el-form-item label="Parameter②">
       <el-input v-model="form.param2" style="width: 250px" />
-    </el-form-item>
+    </el-form-item> -->
     <!-- <el-form-item label="Parameter③">
       <el-input v-model="form.param3" style="width: 250px" />
     </el-form-item>
@@ -58,7 +58,7 @@ export default {
         // param3: '',
         // param4: '',
         param1: '',
-        param2: ''
+        param2: '0'
       }
     }
   },

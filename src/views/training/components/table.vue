@@ -10,17 +10,17 @@
     >
       <el-table-column prop="id" label="Id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')" />
       <el-table-column prop="des" label="Description" min-width="150px" align="center" />
-      <el-table-column prop="algorithm" label="Algorithm" width="90px" align="center">
+      <el-table-column prop="algorithm" label="Algorithm" width="100px" align="center">
         <template slot-scope="{row}">
           <el-tag>{{ row.algorithm | typeFilter }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="create_time" label="Create_time" width="160px" align="center" />
       <el-table-column prop="creator" label="Creator" width="110px" align="center" />
-      <el-table-column prop="param1" label="Param1" width="90px" align="center" />
-      <el-table-column prop="param2" label="Param2" width="90px" align="center" />
+      <el-table-column prop="param1" label="Classifier" width="90px" align="center" />
+      <!-- <el-table-column prop="param2" label="Param2" width="90px" align="center" />
       <el-table-column prop="param3" label="Param3" width="90px" align="center" />
-      <el-table-column prop="param4" label="Param4" width="90px" align="center" />
+      <el-table-column prop="param4" label="Param4" width="90px" align="center" /> -->
       <el-table-column
         label="Dataset"
         align="center"
@@ -31,11 +31,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Status" width="100" align="center">
+      <el-table-column prop="state" label="Status" width="100" align="center">
         <template slot-scope="{row}">
           <el-tag :type="row.status | statusFilter">
-            status
-            <!-- {{ row.status }} -->
+            {{ row.state | statusFilter }}
           </el-tag>
         </template>
       </el-table-column>
@@ -50,12 +49,21 @@
 <script>
 import { modellist } from '@/api/model'
 const calendarTypeOptions = [
-  { key: '0', display_name: '算法1' },
-  { key: '1', display_name: '算法2' }
+  { key: '0', display_name: 'RandomForest' },
+  { key: '1', display_name: 'AdaBoost' }
+]
+const statusType = [
+  { key: '0', display_name: '训练中' },
+  { key: '1', display_name: '已完成' }
 ]
 
 // eslint-disable-next-line no-unused-vars
 const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
+  acc[cur.key] = cur.display_name
+  return acc
+}, {})
+
+const statusTypeKeyValue = statusType.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name
   return acc
 }, {})
@@ -66,6 +74,9 @@ export default {
   filters: {
     typeFilter(type) {
       return calendarTypeKeyValue[type]
+    },
+    statusFilter(type) {
+      return statusTypeKeyValue[type]
     }
   },
   data() {

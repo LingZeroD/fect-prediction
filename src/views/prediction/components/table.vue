@@ -26,10 +26,20 @@
         </template>
       </el-table-column>
 
+      <el-table-column
+        label="Result"
+        align="center"
+        :show-overflow-tooltip="true"
+      >
+        <template scope="scope">
+          <div name="downloadfile" style="color:cornflowerblue" @click="downloadResult(scope.row)">result.csv</div>
+        </template>
+      </el-table-column>
+
       <el-table-column label="Status" width="100" align="center">
         <template slot-scope="{row}">
           <el-tag :type="row.status | statusFilter">
-            status
+            {{ row.state | statusFilter }}
             <!-- {{ row.status }} -->
           </el-tag>
         </template>
@@ -43,10 +53,22 @@
 
 <script>
 import { preList } from '@/api/model'
-
+const statusType = [
+  { key: '0', display_name: '训练中' },
+  { key: '1', display_name: '已完成' }
+]
+const statusTypeKeyValue = statusType.reduce((acc, cur) => {
+  acc[cur.key] = cur.display_name
+  return acc
+}, {})
 export default {
   name: 'ComplexTable',
   components: {},
+  filters: {
+    statusFilter(type) {
+      return statusTypeKeyValue[type]
+    }
+  },
   data() {
     return {
       URL,
@@ -90,6 +112,14 @@ export default {
       const file = this.convertBase64ToBlob(row.data, 'application/vhd.ms-excel', 1024)
       const link = document.createElement('a')
       link.download = 'data.csv'
+      link.href = URL.createObjectURL(file)
+      link.click()
+      URL.revokeObjectURL(link.href)
+    },
+    downloadResult(row) {
+      const file = this.convertBase64ToBlob(row.result, 'application/vhd.ms-excel', 1024)
+      const link = document.createElement('a')
+      link.download = 'result.csv'
       link.href = URL.createObjectURL(file)
       link.click()
       URL.revokeObjectURL(link.href)
