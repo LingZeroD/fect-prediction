@@ -20,6 +20,9 @@ const mutations = {
   SET_USERNAME: (state, username) => {
     state.username = username
   },
+  SET_EMAIL: (state, email) => {
+    state.email = email
+  },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
   },
@@ -32,7 +35,7 @@ const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
-    console.log(userInfo)// 能打出来
+    console.log(userInfo)
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(res => {
         const { data } = res
@@ -53,11 +56,12 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { id, avatar, username } = data
+        const { id, avatar, username, email } = data
         commit('SET_ROLES', ['admin'])
         commit('SET_ID', id)
         commit('SET_USERNAME', username)
         commit('SET_AVATAR', avatar)
+        commit('SET_EMAIL', email)
         resolve(data)
       }).catch(error => {
         reject(error)

@@ -153,6 +153,10 @@ export default {
             .then(() => {
               this.$router.push({ path: '/', query: this.otherQuery })
               this.loading = false
+              this.$message({
+                message: '登录成功',
+                type: 'success'
+              })
             })
             .catch(() => {
               this.loading = false

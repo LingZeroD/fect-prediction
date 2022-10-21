@@ -11,7 +11,7 @@
 
 <script>
 import DndList from '@/components/DndList'
-import { fetchList } from '@/api/model'
+import { fetchList } from '@/api/article'
 
 export default {
   name: 'DndListDemo',

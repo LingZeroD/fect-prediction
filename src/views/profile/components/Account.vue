@@ -60,9 +60,11 @@ export default {
   },
   methods: {
     submit(updateForm, name) {
-      console.log(name)
       // name: this.$store.getters.name, password: updateForm.npwd
-      alterPassword({ username: 'aki', password: updateForm.npwd, email: '20301121@qq.com' }).then(res => {
+      console.log(this.$store.getters.name)
+      console.log(updateForm.npwd)
+      console.log(this.$store.getters.email)
+      alterPassword({ username: this.$store.getters.name, password: updateForm.npwd, email: this.$store.getters.email }).then(res => {
         this.$message({
           message: '更改成功',
           type: 'success'

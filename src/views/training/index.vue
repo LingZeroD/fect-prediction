@@ -1,101 +1,46 @@
 <template>
   <div style="margin: 30px">
     <Form :data="formData" />
+    <Table :data="tableData" />
   </div>
 </template>
 
 <script>
-import Form from './form'
+import { mapGetters } from 'vuex'
+import Form from './components/form'
+import Table from './components/table'
 
 export default {
   name: 'Test',
-  components: { Form },
+  // eslint-disable-next-line vue/no-unused-components
+  components: { Form, Table },
   data() {
     return {
-      formData: {
-        width: '100px',
-        items: [
-          {
-            type: 'Input',
-            label: 'Description',
-            prop: 'description',
-            width: '500px',
-            placeholder: 'Add your description... ',
-            default: ''
-          },
-          {
-            type: 'Select',
-            label: 'Agorithm',
-            prop: 'agorithm',
-            placeholder: 'Please select an algorithm',
-            default: 'algorithm1',
-            options: [
-              {
-                label: 'algorithm1',
-                value: 'algorithm1'
-              },
-              {
-                label: 'algorithm2',
-                value: 'algorithm2'
-              }
-            ]
-          },
-          {
-            type: 'Input',
-            label: 'Paragram①',
-            prop: 'paragram1',
-            width: '200px',
-            placeholder: 'rate ',
-            default: ''
-          },
-          {
-            type: 'Input',
-            label: 'Paragram②',
-            prop: 'paragram1',
-            width: '200px',
-            placeholder: 'iters',
-            default: ''
-          },
-          {
-            type: 'Upload',
-            label: 'File',
-            prop: 'file',
-            default: ''
-          }
-        ],
-        buttons: [
-          {
-            label: 'Submit',
-            type: 'primary',
-            action: 'submit',
-            call: (data) => {
-              console.log(data)
-            }
-          },
-          {
-            label: 'Reset',
-            type: 'primary',
-            action: 'reset',
-            call: () => {
-              console.log('reset')
-            }
-          }
-        ],
-        rules: {
-          // region: [
-          //   { required: true, message: '请选择活动区域', trigger: 'change' }
-          // ],
-          // type: [
-          //   { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-          // ]
-        }
+      user: {}
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
+  },
+  created() {
+    this.getUser()
+  },
+  methods: {
+    getUser() {
+      this.user = {
+        name: this.name
       }
     }
   }
 }
 </script>
 
-  <style scoped>
+<style scoped>
+/* .layui-form-label {
+    width: 1000px;
+} */
 
-  </style>
+</style>
 

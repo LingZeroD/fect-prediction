@@ -2,11 +2,9 @@
   <div class="app-container">
     <div v-if="user">
       <el-row :gutter="20">
-
         <el-col :span="6" :xs="24">
           <user-card :user="user" />
         </el-col>
-
         <el-col :span="18" :xs="24">
           <el-card>
             <el-tabs v-model="activeTab">
@@ -39,7 +37,8 @@ export default {
   computed: {
     ...mapGetters([
       'name',
-      'avatar'
+      'avatar',
+      'email'
     ])
   },
   created() {
@@ -51,8 +50,7 @@ export default {
         name: this.name,
         password: this.password,
         avatar: this.avatar,
-        email: '2030xxxx@bjtu.edu.cn'
-        // this.email
+        email: this.email
       }
     }
   }

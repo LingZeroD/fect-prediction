@@ -7,16 +7,23 @@
 
       <!--        <el-button type="primary" style="margin-left: 5px" @click=handleDownload()>export</el-button>-->
     </div>
-
+    <i :class="[refresh? 'el-icon-refresh go' : 'el-icon-refresh']" style="margin-top:10px" @click="iconClick" />
     <el-table
-      :data="tableData"
+      :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
       border
       fit
       highlight-current-row
       style="width: 100%;"
     >
-      <el-table-column prop="id" label="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')" />
-      <el-table-column prop="des" label="description" min-width="150px" align="center" />
+      <el-table-column
+        prop="id"
+        label="id"
+        sortable="custom"
+        align="center"
+        width="50"
+        :class-name="getSortClass('id')"
+      />
+      <el-table-column prop="des" label="description" min-width="130px" align="center" />
       <el-table-column prop="algorithm" label="algorithm" width="90px" align="center">
         <template slot-scope="{row}">
           <el-tag>{{ row.algorithm | typeFilter }}</el-tag>
@@ -45,8 +52,24 @@
       </el-table-column>
 
     </el-table>
+    <el-pagination
+      align="center"
+      :current-page="currentPage"
+      :page-sizes="[1,5,10,20]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="tableData.length"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
 
-    <pagination v-show="total>0" :total="total" :page.sync="tableData.page" :limit.sync="tableData.limit" @pagination="load" />
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="tableData.page"
+      :limit.sync="tableData.limit"
+      @pagination="load"
+    />
 
     <el-dialog title="Details" :visible.sync="dialogVisible">
       <el-form v-model="form" border fit highlight-current-row style="width: 600px; margin-left:0px;">
@@ -55,7 +78,8 @@
           :underline="false"
           style="color:cornflowerblue"
           @click="download"
-        >下载查看：训练数据</el-link>
+        >下载查看：训练数据
+        </el-link>
 
         <el-form-item label="param1" width="120px" align="center" />
         <el-input v-model="form.param1" width="120px" align="center" disabled="false" />
@@ -84,6 +108,7 @@
 
 <script>
 import { modellist } from '@/api/model'
+
 const calendarTypeOptions = [
   { key: '0', display_name: '算法1' },
   { key: '1', display_name: '算法2' }
@@ -107,8 +132,6 @@ export default {
     return {
       URL,
       form: {},
-      currentPage: 1,
-      total: 0,
       creator: '',
       algorithm: '',
       calendarTypeOptions,
@@ -117,7 +140,10 @@ export default {
       dialogStatus: '',
       tableData: [],
       search_creator: '',
-      search_algorithm: ''
+      search_algorithm: '',
+      currentPage: 1, // 当前页码
+      total: 20, // 总条数
+      pageSize: 10 // 每页的数据条数
     }
   },
   created() {
@@ -197,6 +223,25 @@ export default {
     handleEdit(row) {
       this.form = JSON.parse(JSON.stringify(row))
       this.dialogVisible = true
+    },
+    iconClick() {
+      this.load()
+      this.refresh = !this.refresh
+      console.log(this.refresh)
+      setTimeout(() => {
+        this.refresh = !this.refresh
+      }, 1000)
+    },
+    // 每页条数改变时触发 选择一页显示多少行
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`)
+      this.currentPage = 1
+      this.pageSize = val
+    },
+    // 当前页改变时触发 跳转其他页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`)
+      this.currentPage = val
     }
   }
 }
