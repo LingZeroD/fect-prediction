@@ -1,19 +1,21 @@
 <template>
   <div class="app-container">
     <div style="margin: 10px 0">
+
       <el-input v-model="search_creator" placeholder="creator" style="width: 20%" clearable />
       <el-input v-model="search_algorithm" placeholder="algorithm" style="width: 20%;margin-left:15px" clearable />
       <el-button type="primary" style="margin-left: 15px" @click="handleFilter()">search</el-button>
 
-      <!--        <el-button type="primary" style="margin-left: 5px" @click=handleDownload()>export</el-button>-->
     </div>
     <i :class="[refresh? 'el-icon-refresh go' : 'el-icon-refresh']" style="margin-top:10px" @click="iconClick" />
+    <el-tag type="success" style="margin-left:49px" effect="dark">使用算法进行模糊查询时:0代表RandomForest 1代表AdaBoost</el-tag>
+    <v-text text="对算法进行查询时:0代表RandomForest 1代表AdaBoost" style="width: 20%" clearable />
     <el-table
       :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
       border
       fit
       highlight-current-row
-      style="width: 100%;"
+      style="width: 100%;margin-top:20px;"
     >
       <el-table-column
         prop="id"
@@ -23,24 +25,51 @@
         width="50"
         :class-name="getSortClass('id')"
       />
-      <el-table-column prop="des" label="description" min-width="130px" align="center" />
-      <el-table-column prop="algorithm" label="algorithm" width="90px" align="center">
+      <el-table-column prop="des" label="description" min-width="120px" align="center" />
+      <el-table-column prop="algorithm" label="algorithm" width="130px" align="center">
         <template slot-scope="{row}">
           <el-tag>{{ row.algorithm | typeFilter }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="create_time" label="create_time" width="160px" align="center" />
       <el-table-column prop="creator" label="creator" width="110px" align="center" />
-      <el-table-column prop="accuracy" label="accuracy" width="90px" align="center" />
-      <el-table-column prop="prec" label="precision" width="90px" align="center" />
-      <el-table-column prop="rec" label="recall" width="90px" align="center" />
       <el-table-column
-        label="训练数据"
+        prop="acc"
+        label="accuracy"
         align="center"
-        :show-overflow-tooltip="true"
       >
-        <template scope="scope">
-          <div name="downloadfile" style="color:cornflowerblue" @click="downloadExcel(scope.row)">data.csv</div>
+        <template slot-scope="scope">
+          {{ fun(scope.row.acc) }}
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        prop="prec"
+        label="precision"
+        align="center"
+      >
+        <template slot-scope="scope">
+          {{ fun(scope.row.prec) }}
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        prop="rec"
+        label="recall"
+        align="center"
+      >
+        <template slot-scope="scope">
+          {{ fun(scope.row.rec) }}
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        prop="f1"
+        label="f1"
+        align="center"
+      >
+        <template slot-scope="scope">
+          {{ fun(scope.row.f1) }}
         </template>
       </el-table-column>
       <el-table-column label="Actions" align="center" width="90" class-name="small-padding fixed-width">
@@ -81,17 +110,8 @@
         >下载查看：训练数据
         </el-link>
 
-        <el-form-item label="param1" width="120px" align="center" />
+        <el-form-item label="Classifier" width="120px" align="center" />
         <el-input v-model="form.param1" width="120px" align="center" disabled="false" />
-
-        <el-form-item label="param2" width="120px" align="center" />
-        <el-input v-model="form.param2" width="120px" align="center" disabled="false" />
-
-        <el-form-item label="param3" width="120px" align="center" />
-        <el-input v-model="form.param3" width="120px" align="center" disabled="false" />
-
-        <el-form-item label="param4" width="120px" align="center" />
-        <el-input v-model="form.param4" width="120px" align="center" disabled="false" />
 
       </el-form>
 
@@ -110,8 +130,8 @@
 import { modellist } from '@/api/model'
 
 const calendarTypeOptions = [
-  { key: '0', display_name: '算法1' },
-  { key: '1', display_name: '算法2' }
+  { key: '0', display_name: 'RandomForest' },
+  { key: '1', display_name: 'AdaBoost' }
 ]
 
 // eslint-disable-next-line no-unused-vars
@@ -139,6 +159,7 @@ export default {
       dialogVisible: false,
       dialogStatus: '',
       tableData: [],
+      refresh: false,
       search_creator: '',
       search_algorithm: '',
       currentPage: 1, // 当前页码
@@ -166,10 +187,15 @@ export default {
       }).then(res => {
         console.log(res)
         this.tableData = res.data.modellist
+        parseFloat(this.tableData).toFixed(2)
         this.total = res.data.total
       }).catch(error => {
         console.log(error)
       })
+    },
+    // 将表中数据保留2位小数
+    fun(val) {
+      return Number(val).toFixed(2)
     },
     // 转化路径变base64的路径
     convertBase64ToBlob(base64, fileType, slice) {
@@ -206,20 +232,6 @@ export default {
       link.click()
       URL.revokeObjectURL(link.href)
     },
-    // handleDownload() {
-    //   this.downloadLoading = true
-    //   import('@/vendor/Export2Excel').then(excel => {
-    //     const tHeader = ['create_time', 'creator', 'algorithm', 'accuracy']
-    //     const filterVal = ['create_time', 'creator', 'algorithm', 'accuracy']
-    //     const data = this.formatJson(filterVal)
-    //     excel.export_json_to_excel({
-    //       header: tHeader,
-    //       data,
-    //       filename: 'table-list'
-    //     })
-    //     this.downloadLoading = false
-    //   })
-    // },
     handleEdit(row) {
       this.form = JSON.parse(JSON.stringify(row))
       this.dialogVisible = true

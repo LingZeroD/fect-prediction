@@ -10,15 +10,15 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column prop="id" label="Id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')" />
+        <el-table-column prop="id" label="Id" sortable="custom" align="center" width="70" :class-name="getSortClass('id')" />
         <el-table-column prop="des" label="Description" min-width="150px" align="center" />
         <el-table-column prop="algorithm" label="Algorithm" width="120px" align="center">
           <template slot-scope="{row}">
             <el-tag>{{ row.algorithm | typeFilter }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="create_time" label="Create_time" width="160px" align="center" />
-        <el-table-column prop="creator" label="Creator" width="110px" align="center" />
+        <el-table-column prop="create_time" label="Create_time" width="155px" align="center" />
+        <el-table-column prop="finish_time" label="Finish_time" width="155px" align="center" />
         <el-table-column prop="param1" label="Classifier" width="90px" align="center" />
         <!-- <el-table-column prop="param2" label="Param2" width="90px" align="center" />
       <el-table-column prop="param3" label="Param3" width="90px" align="center" />

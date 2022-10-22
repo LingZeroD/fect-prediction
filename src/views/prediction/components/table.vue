@@ -15,8 +15,8 @@
             <el-tag>{{ row.model }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="time" label="Create_time" width="200px" align="center" />
-        <el-table-column prop="username" label="Creator" width="150px" align="center" />
+        <el-table-column prop="time" label="Create_time" width="155px" align="center" />
+        <el-table-column prop="finish" label="Finish_time" width="155px" align="center" />
         <el-table-column
           label="Dataset"
           align="center"
