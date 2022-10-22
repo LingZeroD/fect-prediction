@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">欢迎来到xxx预测系统</h3>
+        <h3 class="title">欢迎来到缺陷预测系统</h3>
       </div>
 
       <el-form-item prop="username">
@@ -74,20 +74,6 @@ export default {
   name: 'Login',
   components: { SocialSign },
   data() {
-    // const validateUsername = (rule, value, callback) => {
-    //   if (!validUsername(value)) {
-    //     callback(new Error('Please enter the correct user name'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
-    // const validatePassword = (rule, value, callback) => {
-    //   if (value.length < 1) {
-    //     callback(new Error('The password can not be less than 6 digits'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
     return {
       loginForm: {
         username: '',
@@ -153,6 +139,10 @@ export default {
             .then(() => {
               this.$router.push({ path: '/', query: this.otherQuery })
               this.loading = false
+              this.$message({
+                message: '登录成功',
+                type: 'success'
+              })
             })
             .catch(() => {
               this.loading = false
@@ -165,28 +155,6 @@ export default {
     },
     handleRegister() {
       this.$router.push({ name: 'auth-redirect' })
-      //   this.$refs['ruleForm'].validate((valid) => {
-      //     if (valid) {
-      //       const user = {
-      //         email: this.ruleForm.email,
-      //         code: this.ruleForm.code,
-      //         password: encrypt(this.ruleForm.pwd)
-      //       }
-      //       register(this.ruleForm.code, user).then(res => {
-      //         this.$message({
-      //           showClose: true,
-      //           message: '注册成功，正在跳转到登录界面...',
-      //           type: 'success'
-      //         })
-      //         setTimeout(() => {
-      //           this.$router.push('/')
-      //         }, 2000)
-      //       }).catch(err => {
-      //         console.log(err.response.data.message)
-      //       })
-      //     }
-      //   })
-      // }
     }
   }
 }
@@ -197,12 +165,12 @@ export default {
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
 $bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
+$light_gray:dodgerblue;
+$cursor: dodgerblue;
 
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
+@supports (-webkit-mask: none) and (not (cater-color: transparent)) {
   .login-container .el-input input {
-    color: $cursor;
+    color: dodgerblue;
   }
 }
 
@@ -212,6 +180,7 @@ $cursor: #fff;
     display: inline-block;
     height: 47px;
     width: 85%;
+    color: #1f2d3d;
 
     input {
       background: transparent;
@@ -219,13 +188,13 @@ $cursor: #fff;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      color: dodgerblue;
       height: 47px;
-      caret-color: $cursor;
-
+      caret-color: transparent;
+///////输入用户名的框框
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
+        box-shadow: 0 0 0px 1000px transparent inset !important;
+        -webkit-text-fill-color: dodgerblue !important;
       }
     }
   }
@@ -234,36 +203,48 @@ $cursor: #fff;
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    color: #454545;
+    color: dodgerblue;
   }
 }
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$bg:dodgerblue;
+$dark_gray:dodgerblue;
+$light_gray:dodgerblue;
 
 .login-container {
-  min-height: 100%;
+/*  min-height: 100%;
   width: 100%;
   background-color: $bg;
-  overflow: hidden;
+  overflow: hidden;*/
+  width: 100%;
+  height: 100%;
+  background-image: url("../../assets/login/back2.png");
+  background-size: cover;
+  background-position: center;
+  position: relative;
 
   .login-form {
     position: relative;
-    width: 520px;
+    width: 420px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 50px 35px ;
     margin: 0 auto;
     overflow: hidden;
+/*    width: 100%;
+    height: 100%;
+    background-image: url("src/assets/login/background.jpg");
+    background-size: cover;
+    background-position: center;
+    position: relative;*/
   }
 
   .tips {
     font-size: 14px;
-    color: #fff;
+    color: dodgerblue;
     margin-bottom: 10px;
-
+    color: dodgerblue;
     span {
       &:first-of-type {
         margin-right: 16px;
@@ -273,7 +254,7 @@ $light_gray:#eee;
 
   .svg-container {
     padding: 6px 5px 6px 15px;
-    color: $dark_gray;
+    color: dodgerblue;
     vertical-align: middle;
     width: 30px;
     display: inline-block;
@@ -281,10 +262,11 @@ $light_gray:#eee;
 
   .title-container {
     position: relative;
+    color: dodgerblue;
 
     .title {
       font-size: 26px;
-      color: $light_gray;
+      color: dodgerblue;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
@@ -296,7 +278,7 @@ $light_gray:#eee;
     right: 10px;
     top: 7px;
     font-size: 16px;
-    color: $dark_gray;
+    color: dodgerblue;
     cursor: pointer;
     user-select: none;
   }
