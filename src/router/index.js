@@ -111,30 +111,66 @@ export const constantRoutes = [
       }
     ]
   },
+  // {
+  //   path: '/training',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/training'),
+  //       name: 'Traning',
+  //       meta: { title: 'Training', icon: 'el-icon-s-opportunity', affix: true }
+  //     }
+  //   ]
+  // },
   {
-    path: '/training',
+    path: '/trainModel',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: () => import('@/views/training'),
-        name: 'Traning',
-        meta: { title: 'Training', icon: 'el-icon-s-opportunity', affix: true }
+        component: () => import('@/views/trainModel'),
+        name: 'TranModel',
+        meta: { title: 'TrainModel', icon: 'el-icon-s-opportunity', affix: true }
       }
     ]
   },
+  // {
+  //   path: '/prediction',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/prediction'),
+  //       name: 'Prediction',
+  //       meta: { title: 'Prediction', icon: 'el-icon-aim', affix: true }
+  //     }
+  //   ]
+  // },
   {
-    path: '/prediction',
+    path: '/predictionwithin',
     component: Layout,
     children: [
       {
         path: 'index',
-        component: () => import('@/views/prediction'),
-        name: 'Prediction',
-        meta: { title: 'Prediction', icon: 'el-icon-aim', affix: true }
+        component: () => import('@/views/prediction-within'),
+        name: 'Prediction Within',
+        meta: { title: 'PredictionWithin', icon: 'el-icon-aim', affix: true }
       }
     ]
   },
+  // {
+  //   path: '/runscript',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/run-script'),
+  //       name: 'runScript',
+  //       meta: { title: 'runScript', icon: 'el-icon-aim', affix: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/documentation',
     component: Layout,

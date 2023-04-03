@@ -39,16 +39,26 @@
         </div>
       </el-upload>
     </el-form-item>
-
+    <el-form-item>
+      <el-dialog :visible.sync="outputDialogVisible">
+        <python-output-card />
+      </el-dialog>
+    </el-form-item>
     <el-form-item>
       <el-button type="primary" round @click="submit">Submit</el-button>
     </el-form-item>
+
   </el-form>
 </template>
 
 <script>
 import { trainModel } from '@/api/model'
+import PythonOutputCard from '@/views/training/components/PythonOutputCard'
+
 export default {
+  components: [
+    PythonOutputCard
+  ],
   data() {
     return {
       form: {
@@ -59,7 +69,8 @@ export default {
         // param4: '',
         param1: '',
         param2: '0'
-      }
+      },
+      outputDialogVisible: false
     }
   },
   methods: {

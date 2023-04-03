@@ -1,13 +1,6 @@
 <template>
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="100px">
-      <el-form-item label="Model ID">
-        <el-select v-model="form.model" placeholder="Please select a model" style="width: 300px">
-          <el-option v-for="item in options" :key="item" :value="item">
-            {{ item }}
-          </el-option>
-        </el-select>
-      </el-form-item>
       <el-row>
         <el-col :span="8">
           <el-form-item label="Dataset">
@@ -18,66 +11,50 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="Embed Dim">
-            <el-input v-model.number="form.params.embed_dim" type="number" placeholder="请输入词嵌入大小" />
+            <el-input v-model.number="form.params.embed_dim" type="number" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="Word GRU Hidden Dim">
-            <el-input v-model.number="form.params.word_gru_hidden_dim" type="number" placeholder="请输入词级别GRU隐藏层大小" />
+            <el-input v-model.number="form.params.word_gru_hidden_dim" type="number" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item label="Sent GRU Hidden Dim">
-            <el-input v-model.number="form.params.sent_gru_hidden_dim" type="number" placeholder="请输入句子级别GRU隐藏层大小" />
+            <el-input v-model.number="form.params.sent_gru_hidden_dim" type="number" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="Word GRU Num Layers">
-            <el-input v-model.number="form.params.word_gru_num_layers" type="number" placeholder="请输入词级别GRU层数" />
+            <el-input v-model.number="form.params.word_gru_num_layers" type="number" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="Sent GRU Num Layers">
-            <el-input v-model.number="form.params.sent_gru_num_layers" type="number" placeholder="请输入句子级别GRU层数" />
+            <el-input v-model.number="form.params.sent_gru_num_layers" type="number" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item label="Exp Name">
-            <el-input v-model="form.params.exp_name" placeholder="请输入实验名称" />
+            <el-input v-model="form.params.exp_name" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="Target Epochs">
-            <el-input v-model.number="form.params.target_epochs" type="number" placeholder="请输入要加载模型的目标轮次" />
+            <el-input v-model.number="form.params.target_epochs" type="number" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="Dropout">
-            <el-input v-model.number="form.params.dropout" type="number" placeholder="请输入dropout" />
+            <el-input v-model.number="form.params.dropout" type="number" />
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="Data">
-        <el-upload
-          ref="upload2"
-          accept=".csv"
-          action=""
-          :limit="1"
-          :on-exceed="handleExceed"
-          :auto-upload="false"
-          :multiple="false"
-          :http-request="uploadFile"
-        >
-          <el-button size="small" type="info" round>choose your file</el-button>
-          <div slot="tip" class="el-upload__tip">
-            Only ".csv" can be Upload.
-          </div>
-        </el-upload>
-      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" round @click="submit">Submit</el-button>
       </el-form-item>
@@ -99,8 +76,7 @@
 </template>
 
 <script>
-import { predictionModel } from '@/api/model'
-import { getModelID } from '@/api/model'
+import { predictionWithinModel } from '@/api/model'
 import { pythonOutputCard } from '@/views/training/components/PythonOutputCard'
 
 export default {
@@ -147,26 +123,14 @@ export default {
 
   },
   created() {
-    this.getOptions()
+
   },
   beforeDestroy() {
     clearTimeout(this.timer)
     this.webSocket.close()
   },
   methods: {
-    getOptions() {
-      getModelID().then(res => {
-        console.log(res)
-        console.log(res.data)
-        console.log(res.data.modellist)
-        this.options = res.data.modellist
-      })
-    },
-    uploadFile(f) {
-      this.data = f.file
-    },
     submit() {
-      this.$refs.upload2.submit()
       const formData = new FormData()
       for (const key in this.form) {
         if (key == 'params') {
@@ -177,9 +141,8 @@ export default {
 
         console.log(formData.get(key))
       }
-      console.log(formData)
-      formData.append('pre_data', this.data)
-      predictionModel(formData).then(res => {
+      this.webSocket = new WebSocket(`ws://localhost:8080/predict-within/${this.form.username}`)
+      predictionWithinModel(formData).then(res => {
         this.$message({
           message: '上传成功',
           type: 'success'
@@ -187,7 +150,7 @@ export default {
         this.lines = []
         this.outputDialogVisible = true
         // this.webSocket = new WebSocket('ws://192.168.1.146:8080/ws')
-        this.webSocket = new WebSocket(`ws://localhost:8080/ws?username=${this.username}`)
+        // this.webSocket = new WebSocket(`ws://localhost:8080/predict-within/${this.form.username}`)
         this.webSocket.onmessage = (event) => {
           this.lines.push(event.data)
           clearTimeout(this.timer)

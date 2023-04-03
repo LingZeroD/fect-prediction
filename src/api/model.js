@@ -21,7 +21,26 @@ export function predictionModel(data) {
     }
   })
 }
-
+export function predictionWithinModel(data) {
+  return request({
+    url: '/predictWithin',
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+export function trainModels(data) {
+  return request({
+    url: '/trainModel',
+    method: 'post',
+    data,
+    headers: {
+      // 'Content-Type': 'application/json'
+    }
+  })
+}
 export function getModelID() {
   return request({
     url: '/model',
@@ -38,9 +57,24 @@ export function modellist(data) {
   })
 }
 
+export function trainModelList(data) {
+  return request({
+    url: '/trainModelList',
+    method: 'get',
+    params: data
+  })
+}
+
 export function preList(data) {
   return request({
     url: '/result',
+    method: 'get',
+    params: data
+  })
+}
+export function preWithinList(data) {
+  return request({
+    url: '/resultWithin',
     method: 'get',
     params: data
   })
